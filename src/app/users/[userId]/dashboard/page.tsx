@@ -18,14 +18,12 @@ export default async function Page() {
     <div>
       <div>Dashboard</div>
       <div className="space-y-4">
-        {tokenMetadataList.map(async (_, index) => {
-          return (
-            <div key={index} className="space-y-1">
-              <AppToken tokenMedata={_} />
-              {_ && <TokenBalance tokenMint={_.mint.toString()} symbol={_.symbol} />}
-            </div>
-          )
-        })}
+        {tokenMetadataList.map((_, index) => (
+          <div key={index} className="space-y-1">
+            <AppToken tokenMetadata={_} />
+            {_ && <TokenBalance tokenMint={_.mint.toString()} symbol={_.symbol} />}
+          </div>
+        ))}
       </div>
     </div>
   )

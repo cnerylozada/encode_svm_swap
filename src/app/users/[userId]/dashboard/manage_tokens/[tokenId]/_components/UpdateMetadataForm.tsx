@@ -1,29 +1,31 @@
 'use client'
-import { Keypair, PublicKey, Transaction } from '@solana/web3.js'
-import { updateTokenMetadata } from '@solana/spl-token'
+import { PublicKey, Transaction } from '@solana/web3.js'
+import { createUpdateFieldInstruction } from '@solana/spl-token-metadata'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { CONNECTION } from '@/contracts/commons'
+import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 
-export const UpdateMetadataForm = () => {
+export const UpdateMetadataForm = ({ tokenMint }: { tokenMint: string }) => {
   const { publicKey, sendTransaction } = useWallet()
 
   const onUpdateMedata = async (wallet: PublicKey) => {
-    // Generate the authority for the mint (also acts as fee payer)
-    const authority = Keypair.generate()
-
-    // Generate keypair to use as mint account
-    const mint = Keypair.generate()
-
-    // Initialize metadata extension
-    // const updateTokenMetadataIx = updateTokenMetadata()
-
-    // const tx = new Transaction().add(updateTokenMetadataIx)
-
-    // await sendAndConfirmTransaction(CONNECTION, tx, [authority, mint])
-    // await sendTransaction(tx, CONNECTION)
+    const data = {
+      field: 'name',
+      value: 'Lucciano1New1',
+    }
+    const updateTokenMetadataIx = createUpdateFieldInstruction({
+      programId: TOKEN_2022_PROGRAM_ID,
+      metadata: new PublicKey(tokenMint),
+      updateAuthority: wallet,
+      field: data.field,
+      value: data.value,
+    })
+    const tx = new Transaction().add(updateTokenMetadataIx)
+    const txSignature = await sendTransaction(tx, CONNECTION)
+    console.log(`txSignature`, txSignature)
   }
-  if (!publicKey) return <div>Wallet is not connected!</div>
 
+  if (!publicKey) return <div>Wallet is not connected!</div>
   return (
     <div>
       <div>UpdateMetadataForm</div>
