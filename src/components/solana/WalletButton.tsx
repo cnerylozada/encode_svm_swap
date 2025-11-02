@@ -1,5 +1,4 @@
 'use client'
-
 import { CONNECTION } from '@/contracts/commons'
 import { ellipsify } from '@/lib/utils'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -36,11 +35,15 @@ export const WalletButton = () => {
 
         await fetchBalance(publicKey)
 
-        await signIn('credentials', {
+        const result = await signIn('credentials', {
           email: 'cnerylozada@gmail.com',
           password: '123456',
           redirect: false,
         })
+        if (result.error) {
+          console.log(`onSignIn error: `, result.error)
+          await disconnect()
+        }
       }
     } catch (error) {
       console.log(`onSignIn error: `, error)
@@ -49,8 +52,7 @@ export const WalletButton = () => {
   }
 
   const onSignOut = async () => {
-    await disconnect()
-    await signOut()
+    await Promise.all([signOut(), disconnect()])
   }
 
   useEffect(() => {

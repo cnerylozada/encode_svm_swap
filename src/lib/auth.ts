@@ -10,7 +10,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       authorize: async (credentials) => {
         console.log(`credentials`, credentials)
-        return { id: '01', email: 'cnerylozada@gmail.com', username: 'cristh' }
+        return { id: '001abc', email: 'cnerylozada@gmail.com', username: 'cristh' }
       },
     }),
   ],
