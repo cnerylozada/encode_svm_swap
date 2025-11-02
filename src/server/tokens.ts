@@ -3,13 +3,18 @@
 import { CONNECTION } from '@/contracts/commons'
 import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
+import { BACKEND_URL } from './common'
 
 export const getAppTokenList = async () => {
-  return [
-    { id: '01', mintAddress: 'mntXmMnUP9vJYxbfykG2ZQhgcFHth6kwg8sVJTBY1pX' },
-    { id: '02', mintAddress: 'supS9xE5YSVNuQyfyE4VKcKMwAAEjzvvVeXW189qpdf' },
-    { id: '03', mintAddress: 'mnteyhFCjqLu5QwfXmEu49dGybyFN5dwPfAhoiMbjNw' },
-  ]
+  try {
+    const tokenListResponse = await fetch(`${BACKEND_URL}/tokens`)
+    const rawTokenList: { id: string; mint_address: string }[] = await tokenListResponse.json()
+
+    return rawTokenList.map((_) => ({ ..._, mintAddress: _.mint_address }))
+  } catch (error) {
+    console.log(`getAppTokenList error`, error)
+    return []
+  }
 }
 
 export const getTokenBalanceByOwner = async (tokenMint: string, wallet: string) => {
