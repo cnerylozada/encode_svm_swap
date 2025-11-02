@@ -7,12 +7,13 @@ import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 
 export const WalletButton = () => {
   const { connected, disconnect, publicKey, signMessage } = useWallet()
   const { setVisible } = useWalletModal()
+  const { status } = useSession()
 
-  const [isLogged, setIsLogged] = useState(false)
   const [balance, setBalance] = useState(0)
 
   const fetchBalance = async (wallet: PublicKey) => {
@@ -26,16 +27,20 @@ export const WalletButton = () => {
 
   const onSignIn = async () => {
     try {
-      if (!connected) {
-        setVisible(true)
-      }
+      if (!connected) setVisible(true)
+
       if (signMessage && publicKey) {
         const data = new TextEncoder().encode('Your message to sign')
         const signature = await signMessage(data)
         console.log(`signature`, signature)
 
-        fetchBalance(publicKey)
-        setIsLogged(true)
+        await fetchBalance(publicKey)
+
+        await signIn('credentials', {
+          email: 'cnerylozada@gmail.com',
+          password: '123456',
+          redirect: false,
+        })
       }
     } catch (error) {
       console.log(`onSignIn error: `, error)
@@ -44,13 +49,21 @@ export const WalletButton = () => {
   }
 
   const onSignOut = async () => {
-    setIsLogged(false)
     await disconnect()
+    await signOut()
   }
 
   useEffect(() => {
-    if (connected && !isLogged) onSignIn()
+    if (connected && status === 'unauthenticated') {
+      onSignIn()
+    }
   }, [connected])
+
+  useEffect(() => {
+    if (connected && publicKey) {
+      fetchBalance(publicKey)
+    }
+  }, [connected, publicKey])
 
   return (
     <div>
