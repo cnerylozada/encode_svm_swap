@@ -2,14 +2,14 @@ import { AppToken } from '@/components/AppToken'
 import { TokenBalance } from '@/components/TokenBalance'
 import { CONNECTION } from '@/contracts/commons'
 import { auth } from '@/lib/auth'
+import { BACKEND_NEXT_URL } from '@/server/common'
 import { getAppTokenList } from '@/server/tokens'
 import { getTokenMetadata, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
 export default async function Page() {
   const session = await auth()
-  const userId = '0345dd45-7433-4300-b6b2-8579ed8746ad'
-  const userResponse = await fetch(`http://localhost:3000/api/users/${userId}`, {
+  const userResponse = await fetch(`${BACKEND_NEXT_URL}/users/${session?.user.id}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${JSON.stringify(session?.user.jwt)}`,

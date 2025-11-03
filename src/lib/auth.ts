@@ -1,3 +1,5 @@
+import { IRawUser } from '@/models/models'
+import { BACKEND_NEXT_URL } from '@/server/common'
 import NextAuth, { type DefaultSession } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import Credentials from 'next-auth/providers/credentials'
@@ -5,6 +7,7 @@ import Credentials from 'next-auth/providers/credentials'
 declare module 'next-auth' {
   interface Session {
     user: {
+      wallet: string
       jwt: JWT
     } & DefaultSession['user']
   }
@@ -14,19 +17,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        email: {},
-        password: {},
+        wallet: {},
       },
       authorize: async (credentials) => {
-        console.log(`credentials`, credentials)
-        return { id: '001abc', wallet: 'AKeJdxqP6MpFyhcFGUN79NTUwe2ntZNoGjw37UTbbFp', email: 'cnerylozada@gmail.com' }
+        const usersResponse = await fetch(`${BACKEND_NEXT_URL}/users?wallet=${credentials.wallet}`)
+        const users: IRawUser[] = await usersResponse.json()
+        if (!users.length) return null
+        return users[0]
       },
     }),
   ],
   session: { strategy: 'jwt', maxAge: 60 * 60 },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id
+        token.wallet = (user as any).wallet
+      }
+      return token
+    },
     async session({ session, token }) {
-      session.user.jwt = token
+      if (token && token.sub) {
+        session.user.id = token.sub
+        session.user.wallet = token.wallet as string
+        session.user.jwt = token
+      }
       return session
     },
   },

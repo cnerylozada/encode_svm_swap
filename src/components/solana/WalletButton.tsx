@@ -36,8 +36,7 @@ export const WalletButton = () => {
         await fetchBalance(publicKey)
 
         const result = await signIn('credentials', {
-          email: 'cnerylozada@gmail.com',
-          password: '123456',
+          wallet: publicKey.toString(),
           redirect: false,
         })
         if (result.error) {

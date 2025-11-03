@@ -2,11 +2,11 @@
 import { CONNECTION } from '@/contracts/commons'
 import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
-import { BACKEND_URL } from './common'
+import { BACKEND_AXUM_URL } from './common'
 
 export const getAppTokenList = async () => {
   try {
-    const tokenListResponse = await fetch(`${BACKEND_URL}/tokens`)
+    const tokenListResponse = await fetch(`${BACKEND_AXUM_URL}/tokens`)
     const rawTokenList: { id: string; mint_address: string }[] = await tokenListResponse.json()
 
     return rawTokenList.map((_) => ({ ..._, mintAddress: _.mint_address }))
