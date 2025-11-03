@@ -1,5 +1,5 @@
 import { DashboardFeature } from '@/components/dashboard/dashboard-feature'
 
-export default function Home() {
+export default async function Home() {
   return <DashboardFeature />
 }

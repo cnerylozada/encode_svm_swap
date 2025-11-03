@@ -1,5 +1,4 @@
 'use server'
-
 import { CONNECTION } from '@/contracts/commons'
 import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'

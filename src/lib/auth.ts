@@ -1,5 +1,14 @@
-import NextAuth from 'next-auth'
+import NextAuth, { type DefaultSession } from 'next-auth'
+import { JWT } from 'next-auth/jwt'
 import Credentials from 'next-auth/providers/credentials'
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      jwt: JWT
+    } & DefaultSession['user']
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -10,9 +19,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       authorize: async (credentials) => {
         console.log(`credentials`, credentials)
-        return { id: '001abc', email: 'cnerylozada@gmail.com', username: 'cristh' }
+        return { id: '001abc', wallet: 'AKeJdxqP6MpFyhcFGUN79NTUwe2ntZNoGjw37UTbbFp', email: 'cnerylozada@gmail.com' }
       },
     }),
   ],
-  session: { strategy: 'jwt', maxAge: 60 * 15 },
+  session: { strategy: 'jwt', maxAge: 60 * 60 },
+  callbacks: {
+    async session({ session, token }) {
+      session.user.jwt = token
+      return session
+    },
+  },
 })
