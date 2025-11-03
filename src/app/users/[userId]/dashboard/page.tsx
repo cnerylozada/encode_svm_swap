@@ -1,18 +1,11 @@
 import { AppToken } from '@/components/AppToken'
 import { TokenBalance } from '@/components/TokenBalance'
 import { CONNECTION } from '@/contracts/commons'
-import { auth } from '@/lib/auth'
 import { getAppTokenList } from '@/server/tokens'
-import { getUserById } from '@/server/users'
 import { getTokenMetadata, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
 export default async function Page() {
-  const session = await auth()
-
-  const user = await getUserById('d93bac63-e3c8-4fdb-98a7-153574c21c63')
-  console.log(`user`, user)
-
   const appTokenList = await getAppTokenList()
   const tokenMetadataList = await Promise.all(
     appTokenList.map((_) =>
@@ -23,7 +16,6 @@ export default async function Page() {
   return (
     <div>
       <div>Dashboard</div>
-      <div>Session: {JSON.stringify(session)}</div>
 
       <div className="space-y-4">
         {tokenMetadataList.map((_, index) => (
