@@ -16,7 +16,7 @@ export default async function Page() {
     },
   })
   const user = await userResponse.json()
-  console.log(`user`, user)
+  console.log(`user`, { session, user })
 
   const appTokenList = await getAppTokenList()
   const tokenMetadataList = await Promise.all(

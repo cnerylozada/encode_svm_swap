@@ -8,6 +8,7 @@ declare module 'next-auth' {
   interface Session {
     user: {
       wallet: string
+      role: IRawUser['role']
       jwt: JWT
     } & DefaultSession['user']
   }
@@ -33,12 +34,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id
         token.wallet = (user as any).wallet
+        token.role = (user as any).role
       }
       return token
     },
     async session({ session, token }) {
       if (token && token.sub) {
         session.user.id = token.sub
+        session.user.role = token.role as IRawUser['role']
         session.user.wallet = token.wallet as string
         session.user.jwt = token
       }
