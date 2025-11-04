@@ -31,18 +31,13 @@ export const WalletButton = () => {
       if (signMessage && publicKey) {
         const data = new TextEncoder().encode('Your message to sign')
         const signature = await signMessage(data)
-        console.log(`signature`, signature)
 
         await fetchBalance(publicKey)
 
-        const result = await signIn('credentials', {
+        await signIn('credentials', {
           wallet: publicKey.toString(),
-          redirect: false,
+          redirectTo: '/dashboard',
         })
-        if (result.error) {
-          console.log(`onSignIn error: `, result.error)
-          await disconnect()
-        }
       }
     } catch (error) {
       console.log(`onSignIn error: `, error)
@@ -51,7 +46,7 @@ export const WalletButton = () => {
   }
 
   const onSignOut = async () => {
-    await Promise.all([signOut(), disconnect()])
+    await Promise.all([signOut({ redirectTo: '/' }), disconnect()])
   }
 
   useEffect(() => {
