@@ -1,5 +1,5 @@
 import { IRawUser } from '@/models/models'
-import { BACKEND_NEXT_URL } from '@/server/common'
+import { BACKEND_AXUM_URL, BACKEND_NEXT_URL } from '@/server/common'
 import NextAuth, { type DefaultSession } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import Credentials from 'next-auth/providers/credentials'
@@ -23,7 +23,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         const usersResponse = await fetch(`${BACKEND_NEXT_URL}/users?wallet=${credentials.wallet}`)
         const users: IRawUser[] = await usersResponse.json()
-        if (!users.length) return null
+        if (!users.length) {
+          const createUserResponse = await fetch(`${BACKEND_AXUM_URL}/users`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ wallet: credentials.wallet }),
+          })
+          const newUser: IRawUser = await createUserResponse.json()
+          return newUser
+        }
         return users[0]
       },
     }),

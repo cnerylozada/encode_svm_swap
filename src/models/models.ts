@@ -4,3 +4,8 @@ export interface IRawUser {
   email: string | null
   role: 'USER' | 'ADMIN'
 }
+
+export interface IRawAppToken {
+  id: string
+  mint_address: string
+}
