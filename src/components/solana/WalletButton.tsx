@@ -11,7 +11,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 export const WalletButton = () => {
   const { connected, disconnect, publicKey, signMessage } = useWallet()
   const { setVisible } = useWalletModal()
-  const { status } = useSession()
+  const { status, data } = useSession()
 
   const [balance, setBalance] = useState(0)
 
@@ -60,6 +60,12 @@ export const WalletButton = () => {
       fetchBalance(publicKey)
     }
   }, [connected, publicKey])
+
+  useEffect(() => {
+    if (status !== 'loading' && !data && connected) {
+      disconnect()
+    }
+  }, [status])
 
   return (
     <div>
