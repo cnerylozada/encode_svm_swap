@@ -28,8 +28,22 @@ export default async function Page() {
   )
   return (
     <div>
-      <div>Dashboard</div>
-      <div className="text-xl font-bold">Welcome {session?.user.email} !</div>
+      <div className="mb-4 space-y-2">
+        <div>Dashboard</div>
+        <div className="text-xl font-bold">Welcome {session?.user.email} !</div>
+        <div className="flex items-center space-x-4 justify-end">
+          <div>
+            <Link href={`/dashboard/mint_swap_tokens`}>
+              <button className="p-2 rounded border border-white">Mint swap tokens!</button>
+            </Link>
+          </div>
+          <div>
+            <Link href={`/dashboard/offers/create`}>
+              <button className="p-2 rounded border border-white">Create a new offer!</button>
+            </Link>
+          </div>
+        </div>
+      </div>
 
       <div className="space-y-4">
         {tokenMetadataList.map(({ id, metadata }, index) => (
