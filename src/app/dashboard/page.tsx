@@ -2,14 +2,14 @@ import { AppToken } from '@/components/AppToken'
 import { TokenBalance } from '@/components/TokenBalance'
 import { auth } from '@/lib/auth'
 import { getAppTokenList, getTokenDetailById } from '@/server/tokens'
-import { Settings } from 'lucide-react'
+import { CircleDollarSign, Settings } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function Page() {
   const session = await auth()
 
   const appTokenList = await getAppTokenList()
-  const tokenMetadataList = await Promise.all(
+  const tokenDetailList = await Promise.all(
     appTokenList.map(async (token) => {
       const tokenDetail = await getTokenDetailById(token.id)
       return tokenDetail
@@ -22,20 +22,32 @@ export default async function Page() {
         <div className="text-xl font-bold">Welcome {session?.user.email} !</div>
         <div className="flex items-center space-x-4 justify-end">
           <div>
-            <Link href={`/dashboard/mint_swap_tokens`}>
-              <button className="p-2 rounded border border-white">Mint swap tokens!</button>
+            <Link href={`/dashboard/request_airdrop`}>
+              <button
+                className="p-2 flex items-center space-x-2
+                rounded border border-white"
+              >
+                <CircleDollarSign className="block w-6 h-6" />
+                <div>Request airdrop!</div>
+              </button>
             </Link>
           </div>
           <div>
             <Link href={`/dashboard/offers/create`}>
-              <button className="p-2 rounded border border-white">Create a new offer!</button>
+              <button
+                className="p-2 flex items-center space-x-2
+                rounded border border-white"
+              >
+                <CircleDollarSign className="block w-6 h-6" />
+                <div>Create a new offer!</div>
+              </button>
             </Link>
           </div>
         </div>
       </div>
 
       <div className="space-y-4">
-        {tokenMetadataList.map(({ id, metadata }, index) => (
+        {tokenDetailList.map(({ id, metadata }, index) => (
           <div key={index} className="space-y-1">
             {session?.user.role === 'ADMIN' && (
               <div>
