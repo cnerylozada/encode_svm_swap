@@ -1,6 +1,6 @@
-import { TokenMetadata } from '@solana/spl-token-metadata'
+import { ITokenMetadata } from '@/models/models'
 
-export const getTokenURI = async (metadata: TokenMetadata | null) => {
+export const getTokenURI = async (metadata: ITokenMetadata) => {
   const DEFAULT_TOKEN_IMAGE =
     'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Solana_cryptocurrency_two.jpg/2560px-Solana_cryptocurrency_two.jpg'
 

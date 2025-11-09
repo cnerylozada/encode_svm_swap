@@ -1,9 +1,9 @@
 'use server'
 import { CONNECTION } from '@/contracts/commons'
-import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
+import { getMint, getTokenMetadata, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 import { BACKEND_AXUM_URL } from './common'
-import { IRawAppToken } from '@/models/models'
+import { IRawAppToken, ITokenDetail } from '@/models/models'
 
 export const getAppTokenList = async () => {
   try {
@@ -17,14 +17,31 @@ export const getAppTokenList = async () => {
   }
 }
 
-export const getAppTokenById = async (id: string) => {
-  const swapTokenResponse = await fetch(`${BACKEND_AXUM_URL}/tokens/${id}`)
-  const swapToken: IRawAppToken = await swapTokenResponse.json()
-  return swapToken
+const getAppTokenById = async (id: string) => {
+  const appTokenResponse = await fetch(`${BACKEND_AXUM_URL}/tokens/${id}`)
+  const appToken: IRawAppToken = await appTokenResponse.json()
+  return appToken
+}
+export const getTokenDetailById = async (id: string): Promise<ITokenDetail> => {
+  const appToken = await getAppTokenById(id)
+  const tokenMint = new PublicKey(appToken.mint_address)
+
+  const mintData = await getMint(CONNECTION, tokenMint, undefined, TOKEN_2022_PROGRAM_ID)
+  const decimals = mintData.decimals
+
+  const metadata = await getTokenMetadata(CONNECTION, tokenMint, undefined, TOKEN_2022_PROGRAM_ID)
+
+  return {
+    id,
+    decimals,
+    metadata: metadata
+      ? { mint: metadata.mint.toString(), name: metadata.name, symbol: metadata.symbol, uri: metadata.uri }
+      : null,
+  }
 }
 
-export const getTokenBalanceByOwner = async (tokenMint: string, wallet: string) => {
-  const tokenAccountsByOwner = await CONNECTION.getParsedTokenAccountsByOwner(new PublicKey(wallet), {
+export const getTokenBalanceByAccount = async (tokenMint: string, account: string) => {
+  const tokenAccountsByOwner = await CONNECTION.getParsedTokenAccountsByOwner(new PublicKey(account), {
     mint: new PublicKey(tokenMint),
     programId: TOKEN_2022_PROGRAM_ID,
   })

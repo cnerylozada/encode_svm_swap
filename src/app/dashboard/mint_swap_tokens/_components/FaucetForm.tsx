@@ -2,20 +2,84 @@
 import { CONNECTION } from '@/contracts/commons'
 import { ClaimSwapTokensContract } from '@/contracts/contracts'
 import { BN } from '@coral-xyz/anchor'
-import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
+import { getAssociatedTokenAddress, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { PublicKey, Transaction } from '@solana/web3.js'
+import { getExplorerLink } from '@solana-developers/helpers'
 
 export const FaucetForm = () => {
   const { sendTransaction, publicKey } = useWallet()
+  const tokenMint = new PublicKey('mntXmMnUP9vJYxbfykG2ZQhgcFHth6kwg8sVJTBY1pX')
+  const adminPubKey = new PublicKey(`AKeJdxqP6MpFyhcFGUN79NTUwe2ntZNoGjw37UTbbFp`)
+
+  const onCreateMainVault = async () => {
+    if (publicKey) {
+      try {
+        const createMainVaultTx = await ClaimSwapTokensContract.methods
+          .createMainVault()
+          .accounts({
+            tokenMint: tokenMint,
+            tokenProgram: TOKEN_2022_PROGRAM_ID,
+            admin: adminPubKey,
+          })
+          .transaction()
+
+        const tx = new Transaction()
+        tx.add(createMainVaultTx)
+
+        const createMainVaultTxSignature = await sendTransaction(tx, CONNECTION)
+        console.log(`createMainVaultTxSignature`, createMainVaultTxSignature)
+      } catch (error) {
+        console.log(`error: `, error)
+      }
+    }
+  }
+
+  const onClaimTokens = async () => {
+    if (publicKey) {
+      try {
+        const claimTokensTx = await ClaimSwapTokensContract.methods
+          .claimTokens(adminPubKey, new BN(2_000_000_000))
+          .accounts({
+            tokenProgram: TOKEN_2022_PROGRAM_ID,
+            tokenMint: tokenMint,
+            signer: publicKey,
+          })
+          .transaction()
+
+        const tx = new Transaction()
+        tx.add(claimTokensTx)
+
+        const claimTokensTxSignature = await sendTransaction(tx, CONNECTION)
+        const explorerLink = getExplorerLink('tx', claimTokensTxSignature, 'devnet')
+        console.log(`claimTokensTxSignature`, claimTokensTxSignature)
+        console.log(`explorerLink`, explorerLink)
+      } catch (error) {
+        console.log(`error: `, error)
+      }
+    }
+  }
+
+  const onGetATA = async () => {
+    if (publicKey) {
+      const associatedTokenAccount = await getAssociatedTokenAddress(
+        tokenMint,
+        publicKey,
+        undefined,
+        TOKEN_2022_PROGRAM_ID,
+        undefined,
+      )
+      console.log(`associatedTokenAccount`, associatedTokenAccount.toString())
+    }
+  }
 
   const onTransferTokens = async () => {
     if (publicKey) {
       try {
         const transferTokensTx = await ClaimSwapTokensContract.methods
-          .transferTokens(new BN(4_000_000_000))
+          .transferTokens(new BN(1_000_000_000))
           .accounts({
-            tokenMintX: new PublicKey('mntXmMnUP9vJYxbfykG2ZQhgcFHth6kwg8sVJTBY1pX'),
+            tokenMintX: tokenMint,
             tokenAccountX: new PublicKey(`BHDtVW8HfL7RCSzH4RuLidxW4iV1YQSRHMKacPHKXxY5`),
             tokenXVault: new PublicKey(`Jmm6EBn7zmTLM5xedRT8Csdk3p44F3Ufw19tRe2bM2g`),
             tokenProgram: TOKEN_2022_PROGRAM_ID,
@@ -33,28 +97,7 @@ export const FaucetForm = () => {
       }
     }
   }
-  const onFundMainVault = async () => {
-    if (publicKey) {
-      try {
-        const fundMainVaultTx = await ClaimSwapTokensContract.methods
-          .fundMainVault(new BN(4_000_000_000))
-          .accounts({
-            tokenMintX: new PublicKey('mntXmMnUP9vJYxbfykG2ZQhgcFHth6kwg8sVJTBY1pX'),
-            tokenProgram: TOKEN_2022_PROGRAM_ID,
-            signer: publicKey,
-          })
-          .transaction()
 
-        const tx = new Transaction()
-        tx.add(fundMainVaultTx)
-
-        const fundMainVaultTxSignature = await sendTransaction(tx, CONNECTION)
-        console.log(`fundMainVaultTxSignature`, fundMainVaultTxSignature)
-      } catch (error) {
-        console.log(`error: `, error)
-      }
-    }
-  }
   return (
     <div>
       <div>FaucetForm</div>
@@ -64,23 +107,35 @@ export const FaucetForm = () => {
             type="button"
             className="p-2 border border-white rounded"
             onClick={async () => {
-              await onTransferTokens()
+              await onCreateMainVault()
             }}
           >
-            onTransferTokens!
+            onCreateMainVault!
           </button>
         </div>
+
         <div>
           <button
             type="button"
             className="p-2 border border-white rounded"
             onClick={async () => {
-              await onFundMainVault()
+              await onClaimTokens()
             }}
           >
-            onFundMainVault!
+            onClaimTokens!
           </button>
         </div>
+        {/* <div>
+          <button
+            type="button"
+            className="p-2 border border-white rounded"
+            onClick={async () => {
+              await onGetATA()
+            }}
+          >
+            onGetATA!
+          </button>
+        </div> */}
       </div>
     </div>
   )

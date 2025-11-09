@@ -1,5 +1,5 @@
 'use client'
-import { getTokenBalanceByOwner } from '@/server/tokens'
+import { getTokenBalanceByAccount } from '@/server/tokens'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useEffect, useState } from 'react'
 
@@ -9,7 +9,7 @@ export const TokenBalance = ({ tokenMint, symbol }: { tokenMint: string; symbol:
 
   useEffect(() => {
     if (publicKey) {
-      getTokenBalanceByOwner(tokenMint, publicKey.toString()).then((_) => setBalance(_))
+      getTokenBalanceByAccount(tokenMint, publicKey.toString()).then((_) => setBalance(_))
     }
   }, [connected])
 

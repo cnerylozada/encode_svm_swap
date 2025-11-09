@@ -1,10 +1,9 @@
 import Image from 'next/image'
-import { TokenMetadata } from '@solana/spl-token-metadata'
 import { getTokenURI } from '@/utils/utils'
+import { ITokenMetadata } from '@/models/models'
 
-export const AppToken = async ({ tokenMetadata }: { tokenMetadata: TokenMetadata | null }) => {
+export const AppToken = async ({ tokenMetadata }: { tokenMetadata: ITokenMetadata }) => {
   const image = await getTokenURI(tokenMetadata)
-
   return (
     <div className="flex items-center p-3 border rounded-md border-white space-x-4">
       <div>

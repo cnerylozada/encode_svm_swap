@@ -10,6 +10,8 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 
 export const WalletButton = () => {
   const { connected, disconnect, publicKey, signMessage } = useWallet()
+  const [lastWallet, setLastWallet] = useState<string | null>(null)
+
   const { setVisible } = useWalletModal()
   const { status, data } = useSession()
 
@@ -29,6 +31,8 @@ export const WalletButton = () => {
       if (!connected) setVisible(true)
 
       if (signMessage && publicKey) {
+        setLastWallet(publicKey.toString())
+
         const data = new TextEncoder().encode('Your message to sign')
         const signature = await signMessage(data)
 
@@ -49,18 +53,28 @@ export const WalletButton = () => {
     await Promise.all([signOut({ redirectTo: '/' }), disconnect()])
   }
 
+  // calling signature pop-up after connect wallet
   useEffect(() => {
     if (connected && status === 'unauthenticated') {
       onSignIn()
     }
   }, [connected])
 
+  // disconnect from dapp if user switch wallet
+  useEffect(() => {
+    if (publicKey && lastWallet && publicKey.toString() !== lastWallet) {
+      onSignOut()
+    }
+  }, [publicKey])
+
+  // update balance if page is refresh
   useEffect(() => {
     if (connected && publicKey) {
       fetchBalance(publicKey)
     }
   }, [connected, publicKey])
 
+  // update balance if page is refresh
   useEffect(() => {
     if (status !== 'loading' && !data && connected) {
       disconnect()
