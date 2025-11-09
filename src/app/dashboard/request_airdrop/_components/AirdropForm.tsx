@@ -5,68 +5,36 @@ import { ITokenDetail } from '@/models/models'
 import { BN } from '@coral-xyz/anchor'
 import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { PublicKey, Transaction } from '@solana/web3.js'
+import { Transaction } from '@solana/web3.js'
 import { Plus, TriangleAlert } from 'lucide-react'
+import { toast } from 'sonner'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import { ellipsify } from '@/lib/utils'
+import { z } from 'zod'
+import { useRouter } from 'next/navigation'
+
+const schema = z.object({
+  tokenId: z.string(),
+  amount: z.number(),
+})
+type SchemaType = z.infer<typeof schema>
 
 export const AirdropForm = ({ tokenDetailList }: { tokenDetailList: ITokenDetail[] }) => {
   const { sendTransaction, publicKey } = useWallet()
-  const tokenMint = new PublicKey('mntXmMnUP9vJYxbfykG2ZQhgcFHth6kwg8sVJTBY1pX')
-
-  // const onCreateMainVault = async () => {
-  //   if (publicKey) {
-  //     try {
-  //       const createMainVaultTx = await ClaimSwapTokensContract.methods
-  //         .createMainVault()
-  //         .accounts({
-  //           tokenMint: tokenMint,
-  //           tokenProgram: TOKEN_2022_PROGRAM_ID,
-  //           admin: adminPubKey,
-  //         })
-  //         .transaction()
-
-  //       const tx = new Transaction()
-  //       tx.add(createMainVaultTx)
-
-  //       const createMainVaultTxSignature = await sendTransaction(tx, CONNECTION)
-  //       console.log(`createMainVaultTxSignature`, createMainVaultTxSignature)
-  //     } catch (error) {
-  //       console.log(`error: `, error)
-  //     }
-  //   }
-  // }
-  // const onTransferTokens = async () => {
-  //   if (publicKey) {
-  //     try {
-  //       const transferTokensTx = await ClaimSwapTokensContract.methods
-  //         .transferTokens(new BN(1_000_000_000))
-  //         .accounts({
-  //           tokenMintX: tokenMint,
-  //           tokenAccountX: new PublicKey(`BHDtVW8HfL7RCSzH4RuLidxW4iV1YQSRHMKacPHKXxY5`),
-  //           tokenXVault: new PublicKey(`Jmm6EBn7zmTLM5xedRT8Csdk3p44F3Ufw19tRe2bM2g`),
-  //           tokenProgram: TOKEN_2022_PROGRAM_ID,
-  //           signer: publicKey,
-  //         })
-  //         .transaction()
-
-  //       const tx = new Transaction()
-  //       tx.add(transferTokensTx)
-
-  //       const transferTokensTxSignature = await sendTransaction(tx, CONNECTION)
-  //       console.log(`transferTokensTxSignature`, transferTokensTxSignature)
-  //     } catch (error) {
-  //       console.log(`error: `, error)
-  //     }
-  //   }
-  // }
+  const router = useRouter()
 
   const MAX_TOKENS_REQUEST = 4
-  const AMOUNT_TO_CLAIM = 1
+  const AMOUNT_TO_CLAIM = 2
 
-  const onClaimTokens = async () => {
+  const { register, handleSubmit } = useForm<SchemaType>({ defaultValues: { amount: AMOUNT_TO_CLAIM } })
+
+  const onClaimTokens = async (decimals: number, tokenMint: string) => {
     if (publicKey) {
       try {
+        const RAW_AMOUNT_TO_FUND = new BN(AMOUNT_TO_CLAIM * 10 ** decimals)
+
         const claimTokensTx = await ClaimSwapTokensContract.methods
-          .claimTokens(ADMIN_PUBKEY, new BN(2_000_000_000))
+          .claimTokens(ADMIN_PUBKEY, RAW_AMOUNT_TO_FUND)
           .accounts({
             tokenProgram: TOKEN_2022_PROGRAM_ID,
             tokenMint: tokenMint,
@@ -77,14 +45,26 @@ export const AirdropForm = ({ tokenDetailList }: { tokenDetailList: ITokenDetail
         const tx = new Transaction()
         tx.add(claimTokensTx)
 
-        const claimTokensTxSignature = await sendTransaction(tx, CONNECTION)
-        console.log(`claimTokensTxSignature`, claimTokensTxSignature)
+        await sendTransaction(tx, CONNECTION)
+
+        toast.success('Successful trasnfer! Returning to the dashboard')
+        await new Promise((resolve) => setTimeout(resolve, 2500))
+        router.push('/dashboard')
       } catch (error) {
         console.log(`error: `, error)
+        toast.error('Something went wrong!')
       }
     }
   }
-  console.log(`tokenDetailList`, tokenDetailList)
+
+  const onSubmit: SubmitHandler<SchemaType> = async (data) => {
+    const { tokenId } = data
+    const tokenDetail = tokenDetailList.find((_) => _.id === tokenId)
+    const tokenMint = tokenDetail?.metadata?.mint
+    if (!tokenDetail || !tokenMint) return
+
+    await onClaimTokens(tokenDetail.decimals, tokenMint)
+  }
 
   return (
     <div className="p-3 border rounded-md border-white space-y-4">
@@ -99,25 +79,33 @@ export const AirdropForm = ({ tokenDetailList }: { tokenDetailList: ITokenDetail
         </div>
       </div>
 
-      <div className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          <select {...register('tokenId')} className="p-2 block w-full border border-white rounded">
+            {tokenDetailList.map((_) => (
+              <option key={_.id} value={_.id}>
+                Token: {_.metadata?.name} | Mint: {ellipsify(_.metadata?.mint, 8)}
+              </option>
+            ))}
+          </select>
+        </div>
+        <input {...register('amount')} className="hidden" />
+
         <div>
           <div>Recipient:</div>
           <div>{publicKey?.toString()}</div>
         </div>
         <div>
           <button
-            type="button"
-            onClick={async () => {
-              await onClaimTokens()
-            }}
+            type="submit"
             className="p-2 flex items-center space-x-1
             rounded border border-white"
           >
             <Plus className="block w-4 h-4" />
-            <div>Give me airdrops!</div>
+            <div>Give me {AMOUNT_TO_CLAIM} tokens!</div>
           </button>
         </div>
-      </div>
+      </form>
     </div>
   )
 }

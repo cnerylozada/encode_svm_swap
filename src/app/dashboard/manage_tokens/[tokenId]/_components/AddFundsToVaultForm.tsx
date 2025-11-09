@@ -12,11 +12,10 @@ import { toast } from 'sonner'
 
 export const AddFundsToVaultForm = ({ tokenDetail }: { tokenDetail: ITokenDetail }) => {
   const router = useRouter()
-  const tokenMint = tokenDetail.metadata?.mint
-
-  const AMOUNT_TO_FUND = 1
-
   const { sendTransaction, publicKey } = useWallet()
+
+  const tokenMint = tokenDetail.metadata?.mint
+  const AMOUNT_TO_FUND = 1
 
   const getAssociatedTokenAccount = async (publicKey: PublicKey, tokenMint: PublicKey) => {
     return getAssociatedTokenAddress(tokenMint, publicKey, undefined, TOKEN_2022_PROGRAM_ID, undefined)
@@ -41,9 +40,10 @@ export const AddFundsToVaultForm = ({ tokenDetail }: { tokenDetail: ITokenDetail
 
         const tx = new Transaction()
         tx.add(fundMainVaultTx)
-        await sendTransaction(tx, CONNECTION)
-        toast.success('Successful trasnfer! Returning to the dashboard')
 
+        await sendTransaction(tx, CONNECTION)
+
+        toast.success('Successful trasnfer! Returning to the dashboard')
         await new Promise((resolve) => setTimeout(resolve, 2500))
         router.push('/dashboard')
       } catch (error) {
@@ -52,6 +52,53 @@ export const AddFundsToVaultForm = ({ tokenDetail }: { tokenDetail: ITokenDetail
       }
     }
   }
+
+  // const onCreateMainVault = async () => {
+  //   if (publicKey) {
+  //     try {
+  //       const createMainVaultTx = await ClaimSwapTokensContract.methods
+  //         .createMainVault()
+  //         .accounts({
+  //           tokenMint: tokenMint,
+  //           tokenProgram: TOKEN_2022_PROGRAM_ID,
+  //           admin: adminPubKey,
+  //         })
+  //         .transaction()
+
+  //       const tx = new Transaction()
+  //       tx.add(createMainVaultTx)
+
+  //       const createMainVaultTxSignature = await sendTransaction(tx, CONNECTION)
+  //       console.log(`createMainVaultTxSignature`, createMainVaultTxSignature)
+  //     } catch (error) {
+  //       console.log(`error: `, error)
+  //     }
+  //   }
+  // }
+  // const onTransferTokens = async () => {
+  //   if (publicKey) {
+  //     try {
+  //       const transferTokensTx = await ClaimSwapTokensContract.methods
+  //         .transferTokens(new BN(1_000_000_000))
+  //         .accounts({
+  //           tokenMintX: tokenMint,
+  //           tokenAccountX: new PublicKey(`BHDtVW8HfL7RCSzH4RuLidxW4iV1YQSRHMKacPHKXxY5`),
+  //           tokenXVault: new PublicKey(`Jmm6EBn7zmTLM5xedRT8Csdk3p44F3Ufw19tRe2bM2g`),
+  //           tokenProgram: TOKEN_2022_PROGRAM_ID,
+  //           signer: publicKey,
+  //         })
+  //         .transaction()
+
+  //       const tx = new Transaction()
+  //       tx.add(transferTokensTx)
+
+  //       const transferTokensTxSignature = await sendTransaction(tx, CONNECTION)
+  //       console.log(`transferTokensTxSignature`, transferTokensTxSignature)
+  //     } catch (error) {
+  //       console.log(`error: `, error)
+  //     }
+  //   }
+  // }
 
   return (
     <div
