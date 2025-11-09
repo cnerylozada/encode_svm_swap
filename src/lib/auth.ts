@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IRawUser } from '@/models/models'
 import { BACKEND_AXUM_URL, BACKEND_NEXT_URL } from '@/server/common'
 import NextAuth, { type DefaultSession } from 'next-auth'
