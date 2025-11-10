@@ -1,6 +1,3 @@
-import { PublicKey } from '@solana/web3.js'
-import { BN } from '@coral-xyz/anchor'
-
 export interface IRawUser {
   id: string
   wallet: string
@@ -34,5 +31,4 @@ export interface IRawOffer {
   tokenWantedAmount: number
   tokenOfferedAmount: number
   bump: number
-  state: string
 }
