@@ -16,6 +16,7 @@ export default async function Page({ params }: { params: Promise<{ account: stri
           tokenWantedAmount: rawOffer.tokenWantedAmount.toNumber(),
           tokenOfferedAmount: rawOffer.tokenOfferedAmount.toNumber(),
           bump: rawOffer.bump,
+          state: rawOffer.state,
         }}
       />
     </div>

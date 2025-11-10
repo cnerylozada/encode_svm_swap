@@ -140,7 +140,6 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
           </select>
 
           <input
-            type="number"
             className="block grow py-1 px-2 border border-white rounded"
             {...register('tokenOffered.amount', { valueAsNumber: true })}
             placeholder="tokenOffered"
@@ -157,7 +156,6 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
           </select>
 
           <input
-            type="number"
             className="block grow py-1 px-2 border border-white rounded"
             {...register('tokenWanted.amount', { valueAsNumber: true })}
             placeholder="tokenWanted"
