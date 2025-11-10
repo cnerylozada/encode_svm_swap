@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Menu, X } from 'lucide-react'
 import { ThemeSelect } from '@/components/theme-select'
-import { ClusterUiSelect } from './cluster/cluster-ui'
 import { WalletButton } from './solana/WalletButton'
 import { useSession } from 'next-auth/react'
 
@@ -49,7 +48,6 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
 
         <div className="hidden md:flex items-center gap-4">
           <WalletButton />
-          <ClusterUiSelect />
           <ThemeSelect />
         </div>
 
@@ -73,7 +71,6 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
               )}
               <div className="flex flex-col gap-4">
                 <WalletButton />
-                <ClusterUiSelect />
                 <ThemeSelect />
               </div>
             </div>
