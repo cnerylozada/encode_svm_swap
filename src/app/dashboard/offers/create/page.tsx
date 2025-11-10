@@ -1,7 +1,9 @@
+import { CreateOfferForm } from './_components/CreateOfferForm'
+
 export default async function Page() {
   return (
     <div>
-      <div>Create offer</div>
+      <CreateOfferForm />
     </div>
   )
 }

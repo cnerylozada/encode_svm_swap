@@ -39,7 +39,7 @@ export default async function Page() {
                 rounded border border-white"
               >
                 <CircleDollarSign className="block w-6 h-6" />
-                <div>Create a new offer!</div>
+                <div>Create new offer!</div>
               </button>
             </Link>
           </div>
