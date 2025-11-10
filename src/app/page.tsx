@@ -17,7 +17,7 @@ export default async function Home() {
         {offerList.map((_) => (
           <Link
             key={_.publicKey.toString()}
-            href={`/offers/${_.account.id}/take`}
+            href={`/offers/${_.publicKey.toString()}/take`}
             className="block p-3 border rounded-md border-white space-x-4"
           >
             <div>Id: {_.account.id}</div>

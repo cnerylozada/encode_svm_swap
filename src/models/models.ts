@@ -1,3 +1,6 @@
+import { PublicKey } from '@solana/web3.js'
+import { BN } from '@coral-xyz/anchor'
+
 export interface IRawUser {
   id: string
   wallet: string
@@ -21,4 +24,14 @@ export interface ITokenDetail {
   id: string
   decimals: number
   metadata: ITokenMetadata | null
+}
+
+export interface IRawOffer {
+  id: string
+  maker: string
+  tokenMintA: string
+  tokenMintB: string
+  tokenWantedAmount: number
+  tokenOfferedAmount: number
+  bump: number
 }
