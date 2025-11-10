@@ -205,6 +205,182 @@ export type Swap = {
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "takeOffer",
+      "discriminator": [
+        128,
+        156,
+        242,
+        207,
+        237,
+        192,
+        103,
+        240
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tokenMintB",
+          "writable": true
+        },
+        {
+          "name": "senderTokenAccountB",
+          "writable": true
+        },
+        {
+          "name": "recipientTokenAccountB",
+          "writable": true
+        },
+        {
+          "name": "offer",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  102,
+                  102,
+                  101,
+                  114,
+                  49
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "maker"
+              },
+              {
+                "kind": "arg",
+                "path": "id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tokenProgram"
+        },
+        {
+          "name": "tokenMintA",
+          "writable": true
+        },
+        {
+          "name": "senderTokenAccountA",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  119,
+                  97,
+                  112,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                  49
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tokenMintA"
+              },
+              {
+                "kind": "arg",
+                "path": "maker"
+              },
+              {
+                "kind": "arg",
+                "path": "id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipientTokenAccountA",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "account",
+                "path": "tokenProgram"
+              },
+              {
+                "kind": "account",
+                "path": "tokenMintA"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "maker",
+          "type": "pubkey"
+        }
+      ]
     }
   ],
   "accounts": [

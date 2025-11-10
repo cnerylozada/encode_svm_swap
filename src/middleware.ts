@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from './lib/auth'
 
-const protectedRoutes = ['/dashboard', '/profile', '/dashboard/request_aidrop', '/dashboard/offers/create']
+const protectedRoutes = ['/dashboard', '/profile', '/dashboard/request_aidrop', '/offers/create']
 const adminRoutes = ['/dashboard/manage_tokens']
 
 export default async function middleware(request: NextRequest) {

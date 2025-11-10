@@ -15,7 +15,7 @@ export const AddFundsToVaultForm = ({ tokenDetail }: { tokenDetail: ITokenDetail
   const { sendTransaction, publicKey } = useWallet()
 
   const tokenMint = tokenDetail.metadata?.mint
-  const AMOUNT_TO_FUND = 1
+  const AMOUNT_TO_FUND = 10
 
   const getAssociatedTokenAccount = async (publicKey: PublicKey, tokenMint: PublicKey) => {
     return getAssociatedTokenAddress(tokenMint, publicKey, undefined, TOKEN_2022_PROGRAM_ID, undefined)
@@ -54,14 +54,14 @@ export const AddFundsToVaultForm = ({ tokenDetail }: { tokenDetail: ITokenDetail
   }
 
   // const onCreateMainVault = async () => {
-  //   if (publicKey) {
+  //   if (publicKey && tokenMint) {
   //     try {
   //       const createMainVaultTx = await ClaimSwapTokensContract.methods
   //         .createMainVault()
   //         .accounts({
   //           tokenMint: tokenMint,
   //           tokenProgram: TOKEN_2022_PROGRAM_ID,
-  //           admin: adminPubKey,
+  //           admin: ADMIN_PUBKEY,
   //         })
   //         .transaction()
 

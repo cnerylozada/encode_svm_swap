@@ -33,7 +33,7 @@ export default async function Page() {
             </Link>
           </div>
           <div>
-            <Link href={`/dashboard/offers/create`}>
+            <Link href={`/offers/create`}>
               <button
                 className="p-2 flex items-center space-x-2
                 rounded border border-white"
