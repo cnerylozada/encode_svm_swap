@@ -14,7 +14,7 @@ export const AddFundsToVaultForm = ({ tokenDetail }: { tokenDetail: ITokenDetail
   const router = useRouter()
   const { sendTransaction, publicKey } = useWallet()
 
-  const tokenMint = tokenDetail.metadata?.mint
+  const tokenMint = tokenDetail.mint
   const AMOUNT_TO_FUND = 10
 
   const getAssociatedTokenAccount = async (publicKey: PublicKey, tokenMint: PublicKey) => {
