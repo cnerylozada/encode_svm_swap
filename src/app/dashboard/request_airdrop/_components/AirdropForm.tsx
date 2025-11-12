@@ -98,7 +98,7 @@ export const AirdropForm = ({ tokenDetailList }: { tokenDetailList: ITokenDetail
         <div>
           <button
             type="submit"
-            className="p-2 flex items-center space-x-1
+            className="mx-auto p-2 flex items-center space-x-1
             rounded border border-white"
           >
             <Plus className="block w-4 h-4" />

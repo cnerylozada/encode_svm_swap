@@ -2,7 +2,7 @@ import { ellipsify } from '@/lib/utils'
 import { IRawOffer } from '@/models/models'
 import { ArrowDownToLine, ArrowUpToLine } from 'lucide-react'
 
-export const OfferItem = ({ offer }: { offer: IRawOffer }) => {
+export const OfferItem = ({ offer, takerMode = false }: { offer: IRawOffer; takerMode?: boolean }) => {
   return (
     <div className="block p-3 border rounded-md border-white" key={offer.id}>
       <div className="text-right">
@@ -10,17 +10,25 @@ export const OfferItem = ({ offer }: { offer: IRawOffer }) => {
       </div>
       <div>Id: {offer.id}</div>
       <div className="flex items-center space-x-2">
-        <ArrowUpToLine className="block w-6 h-6 text-red-500" />
+        {takerMode ? (
+          <ArrowDownToLine className="block w-6 h-6 text-green-500" />
+        ) : (
+          <ArrowUpToLine className="block w-6 h-6 text-red-500" />
+        )}
         <div>
-          <span className="font-bold">Token offered:</span> {offer.tokenOfferedAmount} | Mint:{' '}
-          {ellipsify(offer.tokenMintA.toString())}
+          <span className="font-bold">{takerMode ? 'You would receive:' : 'Token offered:'}</span>{' '}
+          {offer.tokenOfferedAmount} | Mint: {ellipsify(offer.tokenMintA.toString())}
         </div>
       </div>
       <div className="flex items-center space-x-2">
-        <ArrowDownToLine className="block w-6 h-6 text-green-500" />
+        {takerMode ? (
+          <ArrowUpToLine className="block w-6 h-6 text-red-500" />
+        ) : (
+          <ArrowDownToLine className="block w-6 h-6 text-green-500" />
+        )}
         <div>
-          <span className="font-bold">Token wanted:</span> {offer.tokenWantedAmount} | Mint:{' '}
-          {ellipsify(offer.tokenMintB.toString())}
+          <span className="font-bold">{takerMode ? 'You would send:' : 'Token wanted:'}</span> {offer.tokenWantedAmount}{' '}
+          | Mint: {ellipsify(offer.tokenMintB.toString())}
         </div>
       </div>
     </div>

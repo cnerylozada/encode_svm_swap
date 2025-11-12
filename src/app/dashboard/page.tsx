@@ -25,17 +25,19 @@ export default async function Page() {
       <div className=" space-y-2">
         <div className="text-xl font-bold">Welcome {session?.user.email} !</div>
         <div className="flex items-center space-x-4 justify-end">
-          <div>
-            <Link href={`/dashboard/request_airdrop`}>
-              <button
-                className="p-2 flex items-center space-x-2
+          {session?.user.role !== 'ADMIN' && (
+            <div>
+              <Link href={`/dashboard/request_airdrop`}>
+                <button
+                  className="p-2 flex items-center space-x-2
                 rounded border border-white"
-              >
-                <CircleDollarSign className="block w-6 h-6" />
-                <div>Request airdrop!</div>
-              </button>
-            </Link>
-          </div>
+                >
+                  <CircleDollarSign className="block w-6 h-6" />
+                  <div>Request airdrop!</div>
+                </button>
+              </Link>
+            </div>
+          )}
           <div>
             <Link href={`/offers/create`}>
               <button

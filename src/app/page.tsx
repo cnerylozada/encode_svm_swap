@@ -19,6 +19,7 @@ export default async function Home() {
         {offerList.map((_) => (
           <Link key={_.publicKey.toString()} href={`/offers/${_.publicKey.toString()}/take`} className="block">
             <OfferItem
+              takerMode
               offer={{
                 id: _.account.id,
                 bump: _.account.bump,

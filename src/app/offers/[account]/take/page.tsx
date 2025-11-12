@@ -6,19 +6,17 @@ export default async function Page({ params }: { params: Promise<{ account: stri
   const rawOffer = await SwapContract.account.offer.fetch(account)
 
   return (
-    <div>
-      <TakeOffer
-        rawOffer={{
-          id: rawOffer.id.toString(),
-          maker: rawOffer.maker.toString(),
-          tokenMintA: rawOffer.tokenMintA.toString(),
-          tokenMintB: rawOffer.tokenMintB.toString(),
-          tokenWantedAmount: rawOffer.tokenWantedAmount.toNumber(),
-          tokenOfferedAmount: rawOffer.tokenOfferedAmount.toNumber(),
-          bump: rawOffer.bump,
-          wasTaken: rawOffer.wasTaken,
-        }}
-      />
-    </div>
+    <TakeOffer
+      rawOffer={{
+        id: rawOffer.id.toString(),
+        maker: rawOffer.maker.toString(),
+        tokenMintA: rawOffer.tokenMintA.toString(),
+        tokenMintB: rawOffer.tokenMintB.toString(),
+        tokenWantedAmount: rawOffer.tokenWantedAmount.toNumber(),
+        tokenOfferedAmount: rawOffer.tokenOfferedAmount.toNumber(),
+        bump: rawOffer.bump,
+        wasTaken: rawOffer.wasTaken,
+      }}
+    />
   )
 }

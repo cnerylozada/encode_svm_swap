@@ -170,7 +170,7 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
           <button
             type="submit"
             disabled={!isValid}
-            className={`p-2 flex items-center space-x-1
+            className={`mx-auto p-2 flex items-center space-x-1
             rounded border border-white ${!isValid && 'cursor-not-allowed'}`}
           >
             <Plus className="block w-4 h-4" />

@@ -1,4 +1,5 @@
 'use client'
+import { OfferItem } from '@/components/Offer'
 import { CONNECTION } from '@/contracts/commons'
 import { SwapContract } from '@/contracts/contracts'
 import { IRawOffer } from '@/models/models'
@@ -42,50 +43,40 @@ export const TakeOffer = ({ rawOffer }: { rawOffer: IRawOffer }) => {
         const signature = await sendTransaction(tx, CONNECTION)
         console.log(`signature`, signature)
 
-        toast.success('New offer created!')
-
+        toast.success('Successful trasnfer! Returning to the dashboard')
         await new Promise((resolve) => setTimeout(resolve, 2500))
         router.push('/dashboard')
       } catch (error) {
         console.log(`error: `, error)
+        toast.error('Something went wrong!')
       }
     }
   }
 
   return (
     <div className="p-3 border rounded-md border-white space-y-4">
-      <div>
-        <div className="font-bold">Take offer</div>
-      </div>
+      <div className="pb-2 border-b border-white font-bold">Take offer</div>
 
-      <div className="space-y-2">
-        <div className="pb-2 border-b border-white">
+      <div className="space-y-4">
+        {rawOffer.wasTaken && <div>This offer has already been accepted!</div>}
+
+        <OfferItem offer={rawOffer} takerMode />
+
+        {!rawOffer.wasTaken && (
           <div>
-            <span className="font-bold">Token offered:</span> {rawOffer.tokenOfferedAmount}
-          </div>
-          <span className="font-bold">Mint:</span> {rawOffer.tokenMintA}
-        </div>
-        <div>
-          <div>
-            <span className="font-bold">Token wanted:</span> {rawOffer.tokenWantedAmount}
-          </div>
-          <div>
-            <span className="font-bold">Mint:</span> {rawOffer.tokenMintB}
-          </div>
-        </div>
-        <div>
-          <button
-            type="button"
-            onClick={async () => {
-              await onTakeOffer()
-            }}
-            className={`p-2 flex items-center space-x-1
+            <button
+              type="button"
+              onClick={async () => {
+                await onTakeOffer()
+              }}
+              className={`mx-auto p-2 flex items-center space-x-1
             rounded border border-white`}
-          >
-            <Plus className="block w-4 h-4" />
-            <div>Take offer!</div>
-          </button>
-        </div>
+            >
+              <Plus className="block w-4 h-4" />
+              <div>Take offer!</div>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
