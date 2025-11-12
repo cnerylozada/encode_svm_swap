@@ -1,4 +1,4 @@
-import { getAppTokenList, getTokenDetailById } from '@/server/tokens'
+import { getAppTokenList, getTokenDetail } from '@/server/tokens'
 import { AirdropForm } from './_components/AirdropForm'
 import { auth } from '@/lib/auth'
 
@@ -7,7 +7,7 @@ export default async function Page() {
   const appTokenList = await getAppTokenList()
   const tokenDetailList = await Promise.all(
     appTokenList.map(async (token) => {
-      const tokenDetail = await getTokenDetailById(token.id)
+      const tokenDetail = await getTokenDetail(token.id, token.mintAddress)
       return tokenDetail
     }),
   )

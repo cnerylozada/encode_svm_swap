@@ -10,7 +10,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ellipsify } from '@/lib/utils'
-import { ArrowDownToLine, ArrowUpFromDot, ArrowUpToLine, Plus } from 'lucide-react'
+import { ArrowDownToLine, ArrowUpToLine, Plus } from 'lucide-react'
 import z from 'zod'
 import { toast } from 'sonner'
 
@@ -39,12 +39,12 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
   })
 
   const onCreateVault = async (id: string, tokenOfferedDetail: ITokenDetail) => {
-    if (publicKey && tokenOfferedDetail.metadata?.mint) {
+    if (publicKey && tokenOfferedDetail.mint) {
       try {
         const createVaultTx = await SwapContract.methods
           .createVault(id)
           .accounts({
-            tokenMint: new PublicKey(tokenOfferedDetail.metadata.mint),
+            tokenMint: new PublicKey(tokenOfferedDetail.mint),
             tokenProgram: TOKEN_2022_PROGRAM_ID,
             signer: publicKey,
           })
@@ -74,7 +74,7 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
       try {
         const associatedTokenAccount = await getAssociatedTokenAccount(
           publicKey,
-          new PublicKey(tokenOffered.tokenDetail.metadata.mint),
+          new PublicKey(tokenOffered.tokenDetail.mint),
         )
 
         const makeOfferTx = await SwapContract.methods
@@ -84,8 +84,8 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
             new BN(tokenWanted.amount * 10 ** tokenWanted.tokenDetail.decimals),
           )
           .accounts({
-            tokenMintA: new PublicKey(tokenOffered.tokenDetail.metadata.mint),
-            tokenMintB: new PublicKey(tokenWanted.tokenDetail.metadata.mint),
+            tokenMintA: new PublicKey(tokenOffered.tokenDetail.mint),
+            tokenMintB: new PublicKey(tokenWanted.tokenDetail.mint),
             senderTokenAccountA: associatedTokenAccount,
             tokenProgram: TOKEN_2022_PROGRAM_ID,
             signer: publicKey,
@@ -132,7 +132,7 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
           <select {...register('tokenOffered.id')} className="p-2 block border border-white rounded">
             {tokenDetailList.map((_) => (
               <option key={_.id} value={_.id}>
-                Token: {_.metadata?.name} | Mint: {ellipsify(_.metadata?.mint, 8)}
+                Token: {_.metadata?.name} | Mint: {ellipsify(_.mint, 8)}
               </option>
             ))}
           </select>
@@ -151,7 +151,7 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
           <select {...register('tokenWanted.id')} className="p-2 block border border-white rounded">
             {tokenDetailList.map((_) => (
               <option key={_.id} value={_.id}>
-                Token: {_.metadata?.name} | Mint: {ellipsify(_.metadata?.mint, 8)}
+                Token: {_.metadata?.name} | Mint: {ellipsify(_.mint, 8)}
               </option>
             ))}
           </select>

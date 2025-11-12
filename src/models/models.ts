@@ -11,7 +11,6 @@ export interface IRawAppToken {
 }
 
 export interface ITokenMetadata {
-  mint: string
   name: string
   symbol: string
   uri: string
@@ -20,6 +19,7 @@ export interface ITokenMetadata {
 export interface ITokenDetail {
   id: string
   decimals: number
+  mint: string
   metadata: ITokenMetadata | null
 }
 

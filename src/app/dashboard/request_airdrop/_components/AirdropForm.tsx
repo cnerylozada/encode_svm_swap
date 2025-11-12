@@ -60,7 +60,7 @@ export const AirdropForm = ({ tokenDetailList }: { tokenDetailList: ITokenDetail
   const onSubmit: SubmitHandler<SchemaType> = async (data) => {
     const { tokenId } = data
     const tokenDetail = tokenDetailList.find((_) => _.id === tokenId)
-    const tokenMint = tokenDetail?.metadata?.mint
+    const tokenMint = tokenDetail?.mint
     if (!tokenDetail || !tokenMint) return
 
     await onClaimTokens(tokenDetail.decimals, tokenMint)
@@ -84,7 +84,7 @@ export const AirdropForm = ({ tokenDetailList }: { tokenDetailList: ITokenDetail
           <select {...register('tokenId')} className="p-2 block w-full border border-white rounded">
             {tokenDetailList.map((_) => (
               <option key={_.id} value={_.id}>
-                Token: {_.metadata?.name} | Mint: {ellipsify(_.metadata?.mint, 8)}
+                Token: {_.metadata?.name} | Mint: {ellipsify(_.mint, 8)}
               </option>
             ))}
           </select>

@@ -17,14 +17,14 @@ export const getAppTokenList = async () => {
   }
 }
 
-const getAppTokenById = async (id: string) => {
+export const getAppTokenById = async (id: string) => {
   const appTokenResponse = await fetch(`${BACKEND_AXUM_URL}/tokens/${id}`)
   const appToken: IRawAppToken = await appTokenResponse.json()
   return appToken
 }
-export const getTokenDetailById = async (id: string): Promise<ITokenDetail> => {
-  const appToken = await getAppTokenById(id)
-  const tokenMint = new PublicKey(appToken.mint_address)
+
+export const getTokenDetail = async (id: string, mintAddress: string): Promise<ITokenDetail> => {
+  const tokenMint = new PublicKey(mintAddress)
 
   const mintData = await getMint(CONNECTION, tokenMint, undefined, TOKEN_2022_PROGRAM_ID)
   const decimals = mintData.decimals
@@ -34,9 +34,8 @@ export const getTokenDetailById = async (id: string): Promise<ITokenDetail> => {
   return {
     id,
     decimals,
-    metadata: metadata
-      ? { mint: metadata.mint.toString(), name: metadata.name, symbol: metadata.symbol, uri: metadata.uri }
-      : null,
+    mint: mintAddress,
+    metadata: metadata ? { name: metadata.name, symbol: metadata.symbol, uri: metadata.uri } : null,
   }
 }
 

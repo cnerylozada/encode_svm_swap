@@ -1,4 +1,4 @@
-import { getTokenBalanceByAccount, getTokenDetailById } from '@/server/tokens'
+import { getAppTokenById, getTokenBalanceByAccount, getTokenDetail } from '@/server/tokens'
 import { AddFundsToVaultForm } from './_components/AddFundsToVaultForm'
 import { web3 } from '@coral-xyz/anchor'
 import { PublicKey } from '@solana/web3.js'
@@ -7,15 +7,16 @@ import { ClaimSwapTokensContract } from '@/contracts/contracts'
 
 export default async function Page({ params }: { params: Promise<{ tokenId: string }> }) {
   const { tokenId } = await params
-  const tokenDetail = await getTokenDetailById(tokenId)
+  const appToken = await getAppTokenById(tokenId)
+  const tokenDetail = await getTokenDetail(tokenId, appToken.mint_address)
 
   if (!tokenDetail.metadata) return <></>
 
   const [main_vault_pda] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from('swap_token1'), new PublicKey(tokenDetail.metadata.mint).toBuffer(), ADMIN_PUBKEY.toBuffer()],
+    [Buffer.from('swap_token1'), new PublicKey(tokenDetail.mint).toBuffer(), ADMIN_PUBKEY.toBuffer()],
     ClaimSwapTokensContract.programId,
   )
-  const accountTokenBalance = await getTokenBalanceByAccount(tokenDetail.metadata.mint, main_vault_pda.toString())
+  const accountTokenBalance = await getTokenBalanceByAccount(tokenDetail.mint, main_vault_pda.toString())
 
   return (
     <div>

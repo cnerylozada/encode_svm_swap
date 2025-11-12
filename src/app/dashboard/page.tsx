@@ -1,7 +1,7 @@
 import { AppToken } from '@/components/AppToken'
 import { TokenBalance } from '@/components/TokenBalance'
 import { auth } from '@/lib/auth'
-import { getAppTokenList, getTokenDetailById } from '@/server/tokens'
+import { getAppTokenList, getTokenDetail } from '@/server/tokens'
 import { CircleDollarSign, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { MyOfferList } from './_components/MyOfferList'
@@ -13,7 +13,7 @@ export default async function Page() {
   const appTokenList = await getAppTokenList()
   const tokenDetailList = await Promise.all(
     appTokenList.map(async (token) => {
-      const tokenDetail = await getTokenDetailById(token.id)
+      const tokenDetail = await getTokenDetail(token.id, token.mintAddress)
       return tokenDetail
     }),
   )
@@ -53,7 +53,7 @@ export default async function Page() {
       </div>
 
       <div className="space-y-4">
-        {tokenDetailList.map(({ id, metadata }, index) => (
+        {tokenDetailList.map(({ id, mint, metadata }, index) => (
           <div key={index} className="space-y-1">
             {session?.user.role === 'ADMIN' && (
               <div>
@@ -70,8 +70,8 @@ export default async function Page() {
             )}
             {metadata && (
               <>
-                <AppToken tokenMetadata={metadata} />
-                <TokenBalance tokenMint={metadata.mint.toString()} symbol={metadata.symbol} />
+                <AppToken mint={mint} metadata={metadata} />
+                <TokenBalance mint={mint} symbol={metadata.symbol} />
               </>
             )}
           </div>
