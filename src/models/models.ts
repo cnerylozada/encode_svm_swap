@@ -31,4 +31,5 @@ export interface IRawOffer {
   tokenWantedAmount: number
   tokenOfferedAmount: number
   bump: number
+  wasTaken: boolean
 }

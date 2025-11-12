@@ -238,6 +238,7 @@ export type Swap = {
         },
         {
           "name": "offer",
+          "writable": true,
           "pda": {
             "seeds": [
               {
@@ -438,6 +439,10 @@ export type Swap = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "wasTaken",
+            "type": "bool"
           }
         ]
       }

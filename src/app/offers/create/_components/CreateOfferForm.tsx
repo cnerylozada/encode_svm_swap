@@ -10,7 +10,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ellipsify } from '@/lib/utils'
-import { Plus } from 'lucide-react'
+import { ArrowDownToLine, ArrowUpFromDot, ArrowUpToLine, Plus } from 'lucide-react'
 import z from 'zod'
 import { toast } from 'sonner'
 
@@ -125,9 +125,7 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
 
   return (
     <div className="p-3 border rounded-md border-white space-y-4">
-      <div>
-        <div className="font-bold">Create offer</div>
-      </div>
+      <div className="pb-2 border-b border-white font-bold">Create offer</div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex items-center space-x-4">
@@ -139,11 +137,14 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
             ))}
           </select>
 
-          <input
-            className="block grow py-1 px-2 border border-white rounded"
-            {...register('tokenOffered.amount', { valueAsNumber: true })}
-            placeholder="tokenOffered"
-          />
+          <div className="grow flex items-center space-x-2">
+            <input
+              className="block grow py-1 px-2 border border-white rounded"
+              {...register('tokenOffered.amount', { valueAsNumber: true })}
+              placeholder="tokenOffered"
+            />
+            <ArrowUpToLine className="w-6 h-6 text-red-500" />
+          </div>
         </div>
 
         <div className="flex items-center space-x-4">
@@ -155,11 +156,14 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
             ))}
           </select>
 
-          <input
-            className="block grow py-1 px-2 border border-white rounded"
-            {...register('tokenWanted.amount', { valueAsNumber: true })}
-            placeholder="tokenWanted"
-          />
+          <div className="grow flex items-center space-x-2">
+            <input
+              className="grow py-1 px-2 border border-white rounded"
+              {...register('tokenWanted.amount', { valueAsNumber: true })}
+              placeholder="tokenWanted"
+            />
+            <ArrowDownToLine className="w-6 h-6 text-green-500" />
+          </div>
         </div>
 
         <div>

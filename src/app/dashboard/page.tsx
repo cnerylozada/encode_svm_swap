@@ -4,6 +4,8 @@ import { auth } from '@/lib/auth'
 import { getAppTokenList, getTokenDetailById } from '@/server/tokens'
 import { CircleDollarSign, Settings } from 'lucide-react'
 import Link from 'next/link'
+import { MyOfferList } from './_components/MyOfferList'
+import { SwapContract } from '@/contracts/contracts'
 
 export default async function Page() {
   const session = await auth()
@@ -16,9 +18,11 @@ export default async function Page() {
     }),
   )
 
+  const rawOfferList = await SwapContract.account.offer.all()
+
   return (
-    <div>
-      <div className="mb-4 space-y-2">
+    <div className="space-y-4">
+      <div className=" space-y-2">
         <div className="text-xl font-bold">Welcome {session?.user.email} !</div>
         <div className="flex items-center space-x-4 justify-end">
           <div>
@@ -71,6 +75,19 @@ export default async function Page() {
           </div>
         ))}
       </div>
+
+      <MyOfferList
+        rawOfferList={rawOfferList.map(({ account }) => ({
+          id: account.id,
+          bump: account.bump,
+          maker: account.maker.toString(),
+          tokenMintA: account.tokenMintA.toString(),
+          tokenMintB: account.tokenMintB.toString(),
+          tokenOfferedAmount: account.tokenOfferedAmount.toNumber(),
+          tokenWantedAmount: account.tokenWantedAmount.toNumber(),
+          wasTaken: account.wasTaken,
+        }))}
+      />
     </div>
   )
 }

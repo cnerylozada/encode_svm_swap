@@ -232,6 +232,7 @@
         },
         {
           "name": "offer",
+          "writable": true,
           "pda": {
             "seeds": [
               {
@@ -432,6 +433,10 @@
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "was_taken",
+            "type": "bool"
           }
         ]
       }
