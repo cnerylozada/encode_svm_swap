@@ -1,7 +1,7 @@
 'use client'
 import { ADMIN_PUBKEY, CONNECTION } from '@/contracts/commons'
 import { ClaimSwapTokensContract } from '@/contracts/contracts'
-import { ITokenDetail } from '@/models/models'
+import { IRawAppToken } from '@/models/models'
 import { BN } from '@coral-xyz/anchor'
 import { getAssociatedTokenAddress, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -10,28 +10,28 @@ import { Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
-export const AddFundsToVaultForm = ({ tokenDetail }: { tokenDetail: ITokenDetail }) => {
+export const AddFundsToVaultForm = ({ tokenDetail }: { tokenDetail: IRawAppToken }) => {
   const router = useRouter()
   const { sendTransaction, publicKey } = useWallet()
 
-  const tokenMint = tokenDetail.mint
+  const mint = tokenDetail.mint
   const AMOUNT_TO_FUND = 10
 
-  const getAssociatedTokenAccount = async (publicKey: PublicKey, tokenMint: PublicKey) => {
-    return getAssociatedTokenAddress(tokenMint, publicKey, undefined, TOKEN_2022_PROGRAM_ID, undefined)
+  const getAssociatedTokenAccount = async (publicKey: PublicKey, mint: PublicKey) => {
+    return getAssociatedTokenAddress(mint, publicKey, undefined, TOKEN_2022_PROGRAM_ID, undefined)
   }
 
   const onFundMainVault = async () => {
-    if (publicKey && tokenMint) {
+    if (publicKey && mint) {
       try {
         const decimals = tokenDetail.decimals
         const RAW_AMOUNT_TO_FUND = new BN(AMOUNT_TO_FUND * 10 ** decimals)
-        const associatedTokenAccount = await getAssociatedTokenAccount(publicKey, new PublicKey(tokenMint))
+        const associatedTokenAccount = await getAssociatedTokenAccount(publicKey, new PublicKey(mint))
 
         const fundMainVaultTx = await ClaimSwapTokensContract.methods
           .fundMainVault(RAW_AMOUNT_TO_FUND)
           .accounts({
-            tokenMint: new PublicKey(tokenMint),
+            tokenMint: new PublicKey(mint),
             senderTokenAccount: associatedTokenAccount,
             tokenProgram: TOKEN_2022_PROGRAM_ID,
             admin: ADMIN_PUBKEY,
@@ -117,7 +117,7 @@ export const AddFundsToVaultForm = ({ tokenDetail }: { tokenDetail: ITokenDetail
         >
           <Plus className="block w-4 h-4" />
           <div>
-            Deposit {AMOUNT_TO_FUND} {tokenDetail.metadata?.symbol}
+            Deposit {AMOUNT_TO_FUND} {tokenDetail.symbol}
           </div>
         </button>
       </div>

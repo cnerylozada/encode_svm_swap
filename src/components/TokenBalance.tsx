@@ -1,9 +1,12 @@
 'use client'
+import { IRawAppToken } from '@/models/models'
 import { getTokenBalanceByAccount } from '@/server/tokens'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useEffect, useState } from 'react'
 
-export const TokenBalance = ({ mint, symbol }: { mint: string; symbol: string }) => {
+export const TokenBalance = ({ token }: { token: IRawAppToken }) => {
+  const { symbol, mint } = token
+
   const { connected, publicKey } = useWallet()
   const [balance, setBalance] = useState(0)
 

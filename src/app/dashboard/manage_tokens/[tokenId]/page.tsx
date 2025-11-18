@@ -8,9 +8,7 @@ import { ClaimSwapTokensContract } from '@/contracts/contracts'
 export default async function Page({ params }: { params: Promise<{ tokenId: string }> }) {
   const { tokenId } = await params
   const appToken = await getAppTokenById(tokenId)
-  const tokenDetail = await getTokenDetail(tokenId, appToken.mint_address)
-
-  if (!tokenDetail.metadata) return <></>
+  const tokenDetail = await getTokenDetail(tokenId, appToken.mint)
 
   const [main_vault_pda] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from('swap_token1'), new PublicKey(tokenDetail.mint).toBuffer(), ADMIN_PUBKEY.toBuffer()],
@@ -21,10 +19,10 @@ export default async function Page({ params }: { params: Promise<{ tokenId: stri
   return (
     <div>
       <div className="mb-4 font-bold">
-        <div>Manage token: {tokenDetail.metadata?.name} </div>
-        <div>Symbol: {tokenDetail.metadata?.symbol}</div>
+        <div>Manage token: {tokenDetail.name} </div>
+        <div>Symbol: {tokenDetail.symbol}</div>
         <div>
-          Account Balance: {accountTokenBalance} {tokenDetail.metadata?.symbol}
+          Account Balance: {accountTokenBalance} {tokenDetail.symbol}
         </div>
       </div>
 

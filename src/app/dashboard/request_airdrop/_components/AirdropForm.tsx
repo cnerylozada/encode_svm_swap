@@ -1,7 +1,7 @@
 'use client'
 import { ADMIN_PUBKEY, CONNECTION } from '@/contracts/commons'
 import { ClaimSwapTokensContract } from '@/contracts/contracts'
-import { ITokenDetail } from '@/models/models'
+import { IRawAppToken } from '@/models/models'
 import { BN } from '@coral-xyz/anchor'
 import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -19,7 +19,7 @@ const schema = z.object({
 })
 type SchemaType = z.infer<typeof schema>
 
-export const AirdropForm = ({ tokenDetailList }: { tokenDetailList: ITokenDetail[] }) => {
+export const AirdropForm = ({ appTokenList }: { appTokenList: IRawAppToken[] }) => {
   const { sendTransaction, publicKey } = useWallet()
   const router = useRouter()
 
@@ -59,7 +59,7 @@ export const AirdropForm = ({ tokenDetailList }: { tokenDetailList: ITokenDetail
 
   const onSubmit: SubmitHandler<SchemaType> = async (data) => {
     const { tokenId } = data
-    const tokenDetail = tokenDetailList.find((_) => _.id === tokenId)
+    const tokenDetail = appTokenList.find((_) => _.id === tokenId)
     const tokenMint = tokenDetail?.mint
     if (!tokenDetail || !tokenMint) return
 
@@ -82,9 +82,9 @@ export const AirdropForm = ({ tokenDetailList }: { tokenDetailList: ITokenDetail
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <select {...register('tokenId')} className="p-2 block w-full border border-white rounded">
-            {tokenDetailList.map((_) => (
+            {appTokenList.map((_) => (
               <option key={_.id} value={_.id}>
-                Token: {_.metadata?.name} | Mint: {ellipsify(_.mint, 8)}
+                Token: {_.name} | Mint: {ellipsify(_.mint, 8)}
               </option>
             ))}
           </select>

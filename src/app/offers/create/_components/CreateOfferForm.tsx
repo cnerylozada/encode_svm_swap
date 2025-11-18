@@ -1,7 +1,7 @@
 'use client'
 import { CONNECTION } from '@/contracts/commons'
 import { SwapContract } from '@/contracts/contracts'
-import { ITokenDetail } from '@/models/models'
+import { IRawAppToken } from '@/models/models'
 import { BN } from '@coral-xyz/anchor'
 import { getAssociatedTokenAddress, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -26,7 +26,7 @@ const schema = z.object({
 })
 type SchemaType = z.infer<typeof schema>
 
-export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDetail[] }) => {
+export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: IRawAppToken[] }) => {
   const { sendTransaction, publicKey } = useWallet()
   const router = useRouter()
 
@@ -38,7 +38,7 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
     resolver: zodResolver(schema),
   })
 
-  const onCreateVault = async (id: string, tokenOfferedDetail: ITokenDetail) => {
+  const onCreateVault = async (id: string, tokenOfferedDetail: IRawAppToken) => {
     if (publicKey && tokenOfferedDetail.mint) {
       try {
         const createVaultTx = await SwapContract.methods
@@ -67,10 +67,10 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
   }
   const onMakeOffer = async (
     id: string,
-    tokenOffered: { tokenDetail: ITokenDetail; amount: number },
-    tokenWanted: { tokenDetail: ITokenDetail; amount: number },
+    tokenOffered: { tokenDetail: IRawAppToken; amount: number },
+    tokenWanted: { tokenDetail: IRawAppToken; amount: number },
   ) => {
-    if (publicKey && tokenOffered.tokenDetail.metadata && tokenWanted.tokenDetail.metadata) {
+    if (publicKey) {
       try {
         const associatedTokenAccount = await getAssociatedTokenAccount(
           publicKey,
@@ -132,7 +132,7 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
           <select {...register('tokenOffered.id')} className="p-2 block border border-white rounded">
             {tokenDetailList.map((_) => (
               <option key={_.id} value={_.id}>
-                Token: {_.metadata?.name} | Mint: {ellipsify(_.mint, 8)}
+                Token: {_.name} | Mint: {ellipsify(_.mint, 8)}
               </option>
             ))}
           </select>
@@ -151,7 +151,7 @@ export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: ITokenDe
           <select {...register('tokenWanted.id')} className="p-2 block border border-white rounded">
             {tokenDetailList.map((_) => (
               <option key={_.id} value={_.id}>
-                Token: {_.metadata?.name} | Mint: {ellipsify(_.mint, 8)}
+                Token: {_.name} | Mint: {ellipsify(_.mint, 8)}
               </option>
             ))}
           </select>

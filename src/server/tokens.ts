@@ -3,14 +3,14 @@ import { CONNECTION } from '@/contracts/commons'
 import { getMint, getTokenMetadata, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 import { BACKEND_AXUM_URL } from './common'
-import { IRawAppToken, ITokenDetail } from '@/models/models'
+import { IRawAppToken } from '@/models/models'
 
 export const getAppTokenList = async () => {
   try {
     const tokenListResponse = await fetch(`${BACKEND_AXUM_URL}/tokens`)
     const rawTokenList: IRawAppToken[] = await tokenListResponse.json()
 
-    return rawTokenList.map((_) => ({ id: _.id, mintAddress: _.mint_address }))
+    return rawTokenList
   } catch (error) {
     console.log(`getAppTokenList error`, error)
     return []
@@ -23,19 +23,20 @@ export const getAppTokenById = async (id: string) => {
   return appToken
 }
 
-export const getTokenDetail = async (id: string, mintAddress: string): Promise<ITokenDetail> => {
-  const tokenMint = new PublicKey(mintAddress)
+export const getTokenDetail = async (id: string, mint: string): Promise<IRawAppToken> => {
+  const tokenMint = new PublicKey(mint)
 
   const mintData = await getMint(CONNECTION, tokenMint, undefined, TOKEN_2022_PROGRAM_ID)
   const decimals = mintData.decimals
 
   const metadata = await getTokenMetadata(CONNECTION, tokenMint, undefined, TOKEN_2022_PROGRAM_ID)
-
   return {
     id,
     decimals,
-    mint: mintAddress,
-    metadata: metadata ? { name: metadata.name, symbol: metadata.symbol, uri: metadata.uri } : null,
+    mint,
+    name: metadata?.name ?? '',
+    symbol: metadata?.symbol ?? '',
+    uri: metadata?.uri ?? '',
   }
 }
 

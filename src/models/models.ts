@@ -7,20 +7,11 @@ export interface IRawUser {
 
 export interface IRawAppToken {
   id: string
-  mint_address: string
-}
-
-export interface ITokenMetadata {
+  mint: string
   name: string
   symbol: string
   uri: string
-}
-
-export interface ITokenDetail {
-  id: string
   decimals: number
-  mint: string
-  metadata: ITokenMetadata | null
 }
 
 export interface IRawOffer {

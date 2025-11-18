@@ -1,7 +1,7 @@
 import { AppToken } from '@/components/AppToken'
 import { TokenBalance } from '@/components/TokenBalance'
 import { auth } from '@/lib/auth'
-import { getAppTokenList, getTokenDetail } from '@/server/tokens'
+import { getAppTokenList } from '@/server/tokens'
 import { CircleDollarSign, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { MyOfferList } from './_components/MyOfferList'
@@ -11,12 +11,6 @@ export default async function Page() {
   const session = await auth()
 
   const appTokenList = await getAppTokenList()
-  const tokenDetailList = await Promise.all(
-    appTokenList.map(async (token) => {
-      const tokenDetail = await getTokenDetail(token.id, token.mintAddress)
-      return tokenDetail
-    }),
-  )
 
   const rawOfferList = await SwapContract.account.offer.all()
 
@@ -53,11 +47,11 @@ export default async function Page() {
       </div>
 
       <div className="space-y-4">
-        {tokenDetailList.map(({ id, mint, metadata }, index) => (
+        {appTokenList.map((_, index) => (
           <div key={index} className="space-y-1">
             {session?.user.role === 'ADMIN' && (
               <div>
-                <Link href={`/dashboard/manage_tokens/${id}`}>
+                <Link href={`/dashboard/manage_tokens/${_.id}`}>
                   <button
                     className="p-1 ml-auto flex items-center space-x-1
                     rounded border border-white text-sm"
@@ -68,12 +62,10 @@ export default async function Page() {
                 </Link>
               </div>
             )}
-            {metadata && (
-              <>
-                <AppToken mint={mint} metadata={metadata} />
-                <TokenBalance mint={mint} symbol={metadata.symbol} />
-              </>
-            )}
+            <>
+              <AppToken token={_} />
+              <TokenBalance token={_} />
+            </>
           </div>
         ))}
       </div>
