@@ -27,6 +27,7 @@ const schema = z.object({
 type SchemaType = z.infer<typeof schema>
 
 export const CreateOfferForm = ({ tokenDetailList }: { tokenDetailList: IRawAppToken[] }) => {
+  console.log(`CreateOfferForm tokenDetailList`, tokenDetailList)
   const { sendTransaction, publicKey } = useWallet()
   const router = useRouter()
 

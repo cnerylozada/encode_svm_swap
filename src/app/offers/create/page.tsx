@@ -3,6 +3,7 @@ import { getAppTokenList } from '@/server/tokens'
 
 export default async function Page() {
   const appTokenList = await getAppTokenList()
+  console.log(`offers/create page appTokenList`, appTokenList)
 
   return (
     <div>
